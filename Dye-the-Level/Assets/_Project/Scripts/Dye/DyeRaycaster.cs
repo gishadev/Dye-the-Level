@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Gisha.DyeTheWorld
+namespace Gisha.DyeTheLevel.Dye
 {
     public class DyeRaycaster : MonoBehaviour
     {

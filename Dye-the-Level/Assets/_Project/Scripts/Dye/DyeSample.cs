@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Gisha.DyeTheWorld
+namespace Gisha.DyeTheLevel.Dye
 {
     public class DyeSample : MonoBehaviour, IPointerDownHandler
     {
