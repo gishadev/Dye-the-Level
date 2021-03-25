@@ -24,6 +24,9 @@ namespace Gisha.DyeTheLevel.Dye
         {
             collider = null;
 
+            if (MaterialManager.DyeMaterial == null)
+                return false;
+
             RaycastHit hitInfo;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 

@@ -7,6 +7,8 @@ namespace Gisha.DyeTheLevel.Dye
     {
         [SerializeField] private Material sampleMaterial;
 
+        public void SetSampleMaterial(Material newMat) => sampleMaterial = newMat;
+
         public void OnPointerDown(PointerEventData eventData)
         {
             MaterialManager.ChangeDyeMaterial(sampleMaterial);
