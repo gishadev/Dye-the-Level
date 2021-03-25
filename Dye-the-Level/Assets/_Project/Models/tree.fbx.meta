@@ -3,7 +3,37 @@ guid: 420daaa5f1f30a84ab5fdbc325fe0c0e
 ModelImporter:
   serializedVersion: 20200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Dirt
+    second: {fileID: 2100000, guid: 1f7b5d049fb84584b8908654f0666f45, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Grass
+    second: {fileID: 2100000, guid: 52b99340c5e90774aa9ce8dc7ffeba2c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Leaves
+    second: {fileID: 2100000, guid: ebe3d78cb357f0c4c971a35c88eedb80, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Mushroom
+    second: {fileID: 2100000, guid: af9d7313a99cacf4a8b3e78520ee7fca, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Mushroom.001
+    second: {fileID: 2100000, guid: 6c8066c524bb75b45ac5cc8920220f01, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Wood
+    second: {fileID: 2100000, guid: 36b3dc43a55f50e4b9af38beb5cf4f81, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
