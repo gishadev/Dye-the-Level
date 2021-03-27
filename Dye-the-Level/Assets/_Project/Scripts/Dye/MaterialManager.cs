@@ -8,6 +8,10 @@ namespace Gisha.DyeTheLevel.Dye
     {
         public static Material DyeMaterial { private set; get; }
 
+        [Header("Discolor")]
+        [SerializeField] private Transform discolorParent;
+        [SerializeField] private Material discolorMaterial;
+
         [Header("Parents")]
         [SerializeField] private Transform samplesRTParent;
         [SerializeField] private Transform samplesUIParent;
@@ -35,6 +39,8 @@ namespace Gisha.DyeTheLevel.Dye
                     CreateUISample(samples[i], i);
                 }
             }
+
+            Discolor();
         }
 
         public static void ChangeDyeMaterial(Material newMaterial)
@@ -64,6 +70,14 @@ namespace Gisha.DyeTheLevel.Dye
 
             var rawImage = sample.GetComponent<RawImage>();
             rawImage.texture = _renderTextures[index];
+        }
+
+        private void Discolor()
+        {
+            MeshRenderer[] meshRenderers = discolorParent.GetComponentsInChildren<MeshRenderer>();
+
+            for (int i = 0; i < meshRenderers.Length; i++)
+                meshRenderers[i].material = discolorMaterial;
         }
     }
 }
