@@ -396,8 +396,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   discolorMaterial: {fileID: 2100000, guid: 592975565911a294797d847bba4af3a2, type: 2}
-  autosampling: 1
-  samples: []
   dyeTargetsParent: {fileID: 8150871281177706564}
   samplesRTParent: {fileID: 33179344}
   samplesUIParent: {fileID: 1275245518}

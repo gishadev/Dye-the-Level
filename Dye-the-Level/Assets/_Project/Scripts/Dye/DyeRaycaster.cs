@@ -12,12 +12,19 @@ namespace Gisha.DyeTheLevel.Dye
             if (Raycast(out Collider collider))
             {
                 var meshRenderer = collider.GetComponent<MeshRenderer>();
-                var newMaterial = MaterialManager.DyeMaterial;
+                var newSample = MaterialManager.DyeSample;
 
                 if (Input.GetMouseButtonDown(0))
-                    Paint(meshRenderer, newMaterial);
+                {
+                    ContainsDyeSample(meshRenderer, out DyeSample oldSample);
+                    Color(meshRenderer, newSample, oldSample);
+                }
+
                 else if (Input.GetMouseButtonDown(1))
-                    Paint(meshRenderer, MaterialManager.DiscolorMaterial);
+                {
+                    ContainsDyeSample(meshRenderer, out DyeSample oldSample);
+                    Discolor(meshRenderer, oldSample);
+                }
             }
         }
 
@@ -26,7 +33,7 @@ namespace Gisha.DyeTheLevel.Dye
         {
             collider = null;
 
-            if (MaterialManager.DyeMaterial == null)
+            if (MaterialManager.DyeSample == null)
                 return false;
 
             RaycastHit hitInfo;
@@ -41,10 +48,45 @@ namespace Gisha.DyeTheLevel.Dye
             return false;
         }
 
-        // Changing of raycasted meshrenderer material.
-        private void Paint(MeshRenderer meshRenderer, Material newMaterial)
+        public bool ContainsDyeSample(MeshRenderer mr, out DyeSample ds)
         {
-            meshRenderer.material = newMaterial;
+            ds = null;
+
+            foreach (var dyeSample in MaterialManager.Samples)
+            {
+                if (dyeSample.DyeMaterial == mr.sharedMaterials[0])
+                {
+                    ds = dyeSample;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        // Changing of raycasted meshrenderer material.
+        private void Color(MeshRenderer meshRenderer, DyeSample newSample, DyeSample oldSample)
+        {
+            if (oldSample != null)
+            {
+                oldSample.DyeCount++;
+                oldSample.SampleUI.UpdateCount(oldSample.DyeCount);
+            }
+
+            meshRenderer.material = newSample.DyeMaterial;
+            newSample.DyeCount--;
+            newSample.SampleUI.UpdateCount(newSample.DyeCount);
+        }
+
+        private void Discolor(MeshRenderer meshRenderer, DyeSample oldSample)
+        {
+            if (oldSample != null)
+            {
+                oldSample.DyeCount++;
+                oldSample.SampleUI.UpdateCount(oldSample.DyeCount);
+            }
+
+            meshRenderer.material = MaterialManager.DiscolorMaterial;
         }
     }
 }
