@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 
 namespace Gisha.DyeTheLevel.Dye
 {
-    public class DyeSample : MonoBehaviour, IPointerDownHandler
+    public class DyeSampleUI : MonoBehaviour, IPointerDownHandler
     {
         [SerializeField] private Material sampleMaterial;
 

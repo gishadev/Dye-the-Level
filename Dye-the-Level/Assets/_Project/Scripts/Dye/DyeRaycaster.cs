@@ -9,14 +9,16 @@ namespace Gisha.DyeTheLevel.Dye
 
         private void Update()
         {
-            if (Input.GetMouseButtonDown(0))
-                if (Raycast(out Collider collider))
-                {
-                    var meshRenderer = collider.GetComponent<MeshRenderer>();
-                    var newMaterial = MaterialManager.DyeMaterial;
+            if (Raycast(out Collider collider))
+            {
+                var meshRenderer = collider.GetComponent<MeshRenderer>();
+                var newMaterial = MaterialManager.DyeMaterial;
 
+                if (Input.GetMouseButtonDown(0))
                     Paint(meshRenderer, newMaterial);
-                }
+                else if (Input.GetMouseButtonDown(1))
+                    Paint(meshRenderer, MaterialManager.DiscolorMaterial);
+            }
         }
 
         // Checking for suitable dye target.

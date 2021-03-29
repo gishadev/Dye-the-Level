@@ -6,8 +6,6 @@ namespace Gisha.DyeTheLevel.Dye
 {
     public class MaterialManager : MonoBehaviour
     {
-        public static Material DyeMaterial { private set; get; }
-
         [Header("Materials")]
         [SerializeField] private Material discolorMaterial;
         [Space]
@@ -23,11 +21,16 @@ namespace Gisha.DyeTheLevel.Dye
         [SerializeField] private GameObject sampleRTPrefab;
         [SerializeField] private GameObject sampleUIPrefab;
 
+        public static Material DyeMaterial { private set; get; }
+        public static Material DiscolorMaterial { private set; get; }
+
         GameObject[] _renderTextureObjects;
         RenderTexture[] _renderTextures;
 
         private void Start()
         {
+            DiscolorMaterial = discolorMaterial;
+
             if (autosampling)
                 Autosample();
 
@@ -68,7 +71,7 @@ namespace Gisha.DyeTheLevel.Dye
 
         private void CreateUISample(Material material, int index)
         {
-            var sample = Instantiate(sampleUIPrefab, Vector3.zero, Quaternion.identity, samplesUIParent).GetComponent<DyeSample>();
+            var sample = Instantiate(sampleUIPrefab, Vector3.zero, Quaternion.identity, samplesUIParent).GetComponent<DyeSampleUI>();
             sample.SetSampleMaterial(material);
 
             var rawImage = sample.GetComponent<RawImage>();
