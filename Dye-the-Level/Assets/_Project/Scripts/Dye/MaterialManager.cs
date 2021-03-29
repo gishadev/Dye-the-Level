@@ -8,11 +8,14 @@ namespace Gisha.DyeTheLevel.Dye
     {
         public static Material DyeMaterial { private set; get; }
 
-        [Header("Discolor")]
-        [SerializeField] private Transform discolorParent;
+        [Header("Materials")]
         [SerializeField] private Material discolorMaterial;
+        [Space]
+        [SerializeField] [Tooltip("Are dye samples creating automatically?")] private bool autosampling = false;
+        [SerializeField] private List<Material> samples = new List<Material>();
 
         [Header("Parents")]
+        [SerializeField] private Transform dyeTargetsParent;
         [SerializeField] private Transform samplesRTParent;
         [SerializeField] private Transform samplesUIParent;
 
@@ -20,14 +23,14 @@ namespace Gisha.DyeTheLevel.Dye
         [SerializeField] private GameObject sampleRTPrefab;
         [SerializeField] private GameObject sampleUIPrefab;
 
-        [Header("Samples List")]
-        [SerializeField] private List<Material> samples = new List<Material>();
-
         GameObject[] _renderTextureObjects;
         RenderTexture[] _renderTextures;
 
         private void Start()
         {
+            if (autosampling)
+                Autosample();
+
             _renderTextures = new RenderTexture[samples.Count];
             _renderTextureObjects = new GameObject[samples.Count];
 
@@ -74,10 +77,22 @@ namespace Gisha.DyeTheLevel.Dye
 
         private void Discolor()
         {
-            MeshRenderer[] meshRenderers = discolorParent.GetComponentsInChildren<MeshRenderer>();
+            MeshRenderer[] meshRenderers = dyeTargetsParent.GetComponentsInChildren<MeshRenderer>();
 
             for (int i = 0; i < meshRenderers.Length; i++)
                 meshRenderers[i].material = discolorMaterial;
+        }
+
+        /// <summary>
+        /// Automatically create dye samples.
+        /// </summary>
+        private void Autosample()
+        {
+            samples = new List<Material>();
+            MeshRenderer[] meshRenderers = dyeTargetsParent.GetComponentsInChildren<MeshRenderer>();
+
+            for (int i = 0; i < meshRenderers.Length; i++)
+                samples.Add(meshRenderers[i].sharedMaterials[0]);
         }
     }
 }

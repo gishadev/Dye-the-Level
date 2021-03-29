@@ -395,19 +395,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20d4174fcebffef44a6f5f3bf0f68f01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  discolorParent: {fileID: 8150871281177706564}
   discolorMaterial: {fileID: 2100000, guid: 592975565911a294797d847bba4af3a2, type: 2}
+  autosampling: 1
+  samples: []
+  dyeTargetsParent: {fileID: 8150871281177706564}
   samplesRTParent: {fileID: 33179344}
   samplesUIParent: {fileID: 1275245518}
   sampleRTPrefab: {fileID: 440548292122090642, guid: 498dad901bdd06c469f0cc4216ba43c3, type: 3}
   sampleUIPrefab: {fileID: 8647641555946706265, guid: 738f7efad2f8e294e8577149d0f3d75d, type: 3}
-  samples:
-  - {fileID: 2100000, guid: 1f7b5d049fb84584b8908654f0666f45, type: 2}
-  - {fileID: 2100000, guid: 52b99340c5e90774aa9ce8dc7ffeba2c, type: 2}
-  - {fileID: 2100000, guid: ebe3d78cb357f0c4c971a35c88eedb80, type: 2}
-  - {fileID: 2100000, guid: 6c8066c524bb75b45ac5cc8920220f01, type: 2}
-  - {fileID: 2100000, guid: af9d7313a99cacf4a8b3e78520ee7fca, type: 2}
-  - {fileID: 2100000, guid: 36b3dc43a55f50e4b9af38beb5cf4f81, type: 2}
 --- !u!4 &206306155
 Transform:
   m_ObjectHideFlags: 0
@@ -1718,7 +1713,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8150871281177706564}
   m_Layer: 6
-  m_Name: tree
+  m_Name: DyeParent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
