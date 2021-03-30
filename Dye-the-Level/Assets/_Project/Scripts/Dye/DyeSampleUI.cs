@@ -23,7 +23,8 @@ namespace Gisha.DyeTheLevel.Dye
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            MaterialManager.ChangeDyeSample(DyeIndex);
+            if (eventData.button == PointerEventData.InputButton.Left)
+                MaterialManager.ChangeDyeSample(DyeIndex);
         }
     }
 }

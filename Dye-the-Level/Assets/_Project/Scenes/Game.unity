@@ -399,7 +399,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   discolorMaterial: {fileID: 2100000, guid: 592975565911a294797d847bba4af3a2, type: 2}
   previewMR: {fileID: 1195801419}
-  previewSampleUI: {fileID: 0}
   dyeTargetsParent: {fileID: 8150871281177706564}
   samplesRTParent: {fileID: 33179344}
   samplesUIParent: {fileID: 494522559}
@@ -465,6 +464,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rotateSpeed: 40
   rotateAcceleration: 35
+  mouseSensitivity: 4
 --- !u!1 &494522558
 GameObject:
   m_ObjectHideFlags: 0
