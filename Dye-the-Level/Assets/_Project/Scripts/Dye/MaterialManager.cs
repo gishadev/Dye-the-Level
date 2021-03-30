@@ -8,8 +8,16 @@ namespace Gisha.DyeTheLevel.Dye
 {
     public class MaterialManager : MonoBehaviour
     {
+        #region Singleton
+        private static MaterialManager Instance { set; get; }
+        #endregion
+
         [Header("Materials")]
         [SerializeField] private Material discolorMaterial;
+
+        [Header("Preview")]
+        [SerializeField] private MeshRenderer previewMR;
+
         [Header("Parents")]
         [SerializeField] private Transform dyeTargetsParent;
         [SerializeField] private Transform samplesRTParent;
@@ -25,20 +33,29 @@ namespace Gisha.DyeTheLevel.Dye
 
         List<DyeSample> _samples = new List<DyeSample>();
 
+        private void Awake()
+        {
+            Instance = this;
+        }
+
         private void Start()
         {
             CreateDyeSamples();
 
-            DyeSample = null;
-            DiscolorMaterial = discolorMaterial;
-            Samples = _samples;
+            DyeSample = _samples[0];
+            UpdatePreview(DyeSample);
 
-            Discolor();
+            Samples = _samples;
+            DiscolorMaterial = discolorMaterial;
+
+            DiscolorAll();
         }
 
         public static void ChangeDyeSample(int index)
         {
             DyeSample = Samples[index];
+            Instance.UpdatePreview(DyeSample);
+
             Debug.Log("Dye Sample was changed!");
         }
 
@@ -67,7 +84,7 @@ namespace Gisha.DyeTheLevel.Dye
                 DyeSampleUI sampleUI = CreateUISample(renderTexture, i, dyeCount);
 
                 DyeSample sample = new DyeSample(sampleUI, dyeMaterial, dyeCount, renderTextureObject, renderTexture);
-                
+
                 _samples.Add(sample);
             }
         }
@@ -96,7 +113,7 @@ namespace Gisha.DyeTheLevel.Dye
             return sampleUI;
         }
 
-        private void Discolor()
+        private void DiscolorAll()
         {
             MeshRenderer[] meshRenderers = dyeTargetsParent.GetComponentsInChildren<MeshRenderer>();
 
@@ -112,6 +129,11 @@ namespace Gisha.DyeTheLevel.Dye
                 .ToArray();
 
             return result;
+        }
+
+        private void UpdatePreview(DyeSample sample)
+        {
+            previewMR.material = sample.DyeMaterial;
         }
     }
 
