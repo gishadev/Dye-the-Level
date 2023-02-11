@@ -7,50 +7,51 @@ using Gisha.DyeTheLevel.Core;
 
 namespace Gisha.DyeTheLevel.Dye
 {
-    public class MaterialManager : MonoBehaviour
+    public class DyeManager : MonoBehaviour
     {
-        #region Singleton
-        private static MaterialManager Instance { set; get; }
-        #endregion
-        
-        [Header("Preview")]
-        [SerializeField] private MeshRenderer previewMR;
+        [Header("Preview")] [SerializeField] private MeshRenderer previewMR;
 
-        [Header("Parents")]
-        [SerializeField] private Transform dyeTargetsParent;
+        [Header("Parents")] [SerializeField] private Transform dyeTargetsParent;
         [SerializeField] private Transform samplesRTParent;
         [SerializeField] private Transform samplesUIParent;
 
-        public static DyeSample DyeSample { private set; get; }
-        public static Material DiscolorMaterial { private set; get; }
-        public static List<DyeSample> Samples { private set; get; }
+        public DyeSample DyeSample { private set; get; }
+        public List<DyeSample> Samples { private set; get; }
 
-        List<DyeSample> _samples = new List<DyeSample>();
+        private List<DyeSample> _samples = new List<DyeSample>();
+        private GameData _gameData;
 
-        private GameData _gameData => ResourceLoader.GetGameData();
-        
         private void Awake()
         {
-            Instance = this;
+            _gameData = ResourceLoader.GetGameData();
         }
 
         private void Start()
         {
-            CreateDyeSamples();
+            CreateDyeSamplesFromWorldMeshRenderers();
 
             DyeSample = _samples[0];
             UpdatePreview(DyeSample);
 
             Samples = _samples;
-            DiscolorMaterial =  _gameData.DiscolorMaterial;
 
             DiscolorAll();
         }
 
-        public static void ChangeDyeSample(int index)
+        private void OnEnable()
+        {
+            DyeSampleUI.DyeSampleUIInteracted += ChangeDyeSample;
+        }
+
+        private void OnDisable()
+        {
+            DyeSampleUI.DyeSampleUIInteracted -= ChangeDyeSample;
+        }
+
+        private void ChangeDyeSample(int index)
         {
             DyeSample = Samples[index];
-            Instance.UpdatePreview(DyeSample);
+            UpdatePreview(DyeSample);
 
             Debug.Log("Dye Sample was changed!");
         }
@@ -58,7 +59,7 @@ namespace Gisha.DyeTheLevel.Dye
         /// <summary>
         /// Automatically create dye samples.
         /// </summary>
-        private void CreateDyeSamples()
+        private void CreateDyeSamplesFromWorldMeshRenderers()
         {
             // Initializing, distincting materials for dyes.
             _samples = new List<DyeSample>();
@@ -76,7 +77,8 @@ namespace Gisha.DyeTheLevel.Dye
                         dyeCount++;
                 }
 
-                GameObject renderTextureObject = CreateRenderTextureObject(dyeMaterial, i, out RenderTexture renderTexture);
+                GameObject renderTextureObject =
+                    CreateRenderTextureObject(dyeMaterial, i, out RenderTexture renderTexture);
                 DyeSampleUI sampleUI = CreateUISample(renderTexture, i, dyeCount);
 
                 DyeSample sample = new DyeSample(sampleUI, dyeMaterial, dyeCount, renderTextureObject, renderTexture);
@@ -100,10 +102,13 @@ namespace Gisha.DyeTheLevel.Dye
 
         private DyeSampleUI CreateUISample(RenderTexture rt, int dyeIndex, int dyeCount)
         {
-            var sampleUI = Instantiate(_gameData.SampleUIPrefab, Vector3.zero, Quaternion.identity, samplesUIParent).GetComponent<DyeSampleUI>();
+            GameObject sampleUIObject =
+                Instantiate(_gameData.SampleUIPrefab, Vector3.zero, Quaternion.identity, samplesUIParent);
+
+            var sampleUI = sampleUIObject.GetComponent<DyeSampleUI>();
             sampleUI.InitializeSample(dyeIndex, dyeCount);
 
-            var rawImage = sampleUI.GetComponent<RawImage>();
+            var rawImage = sampleUIObject.GetComponent<RawImage>();
             rawImage.texture = rt;
 
             return sampleUI;

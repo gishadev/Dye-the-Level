@@ -1,92 +1,65 @@
+using Gisha.DyeTheLevel.Core;
 using UnityEngine;
 
 namespace Gisha.DyeTheLevel.Dye
 {
+    [RequireComponent(typeof(DyeManager))]
     public class DyeRaycaster : MonoBehaviour
     {
         [SerializeField] private LayerMask whatIsPaintable;
         [SerializeField] private float raycastDistance = 5000f;
 
+        private DyeManager _dyeManager;
+        private GameData _gameData;
+        private DyeChanger _dyeChanger;
+
+        private void Awake()
+        {
+            _dyeManager = GetComponent<DyeManager>();
+            _gameData = ResourceLoader.GetGameData();
+            _dyeChanger = new DyeChanger(_dyeManager, _gameData);
+        }
+
         private void Update()
         {
-            if (Raycast(out Collider collider))
+            if (Input.GetMouseButtonDown(0)) CheckLMB();
+            if (Input.GetMouseButtonDown(1)) CheckRMB();
+        }
+
+
+        private void CheckLMB()
+        {
+            if (RaycastAndReturnMR(out var mr))
             {
-                var meshRenderer = collider.GetComponent<MeshRenderer>();
-                var newSample = MaterialManager.DyeSample;
-
-                if (Input.GetMouseButtonDown(0))
-                {
-                    ContainsDyeSample(meshRenderer, out DyeSample oldSample);
-                    Color(meshRenderer, newSample, oldSample);
-                }
-
-                else if (Input.GetMouseButtonDown(1))
-                {
-                    ContainsDyeSample(meshRenderer, out DyeSample oldSample);
-                    Discolor(meshRenderer, oldSample);
-                }
+                _dyeChanger.ContainsDyeSample(mr, out var oldSample);
+                _dyeChanger.Color(mr, _dyeManager.DyeSample, oldSample);
             }
         }
 
-        // Checking for suitable dye target.
-        private bool Raycast(out Collider collider)
+        private void CheckRMB()
         {
-            collider = null;
+            if (RaycastAndReturnMR(out var mr))
+            {
+                _dyeChanger.ContainsDyeSample(mr, out var oldSample);
+                _dyeChanger.Discolor(mr, oldSample);
+            }
+        }
 
-            if (MaterialManager.DyeSample == null)
+
+        private bool RaycastAndReturnMR(out MeshRenderer meshRenderer)
+        {
+            meshRenderer = null;
+
+            if (_dyeManager.DyeSample == null)
                 return false;
 
             RaycastHit hitInfo;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
             if (Physics.Raycast(ray, out hitInfo, raycastDistance, whatIsPaintable))
-            {
-                collider = hitInfo.collider;
-                return true;
-            }
+                return hitInfo.collider.TryGetComponent(out meshRenderer);
 
             return false;
-        }
-
-        public bool ContainsDyeSample(MeshRenderer mr, out DyeSample ds)
-        {
-            ds = null;
-
-            foreach (var dyeSample in MaterialManager.Samples)
-            {
-                if (dyeSample.DyeMaterial == mr.sharedMaterials[0])
-                {
-                    ds = dyeSample;
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        // Changing of raycasted meshrenderer material.
-        private void Color(MeshRenderer meshRenderer, DyeSample newSample, DyeSample oldSample)
-        {
-            if (oldSample != null)
-            {
-                oldSample.DyeCount++;
-                oldSample.SampleUI.UpdateCount(oldSample.DyeCount);
-            }
-
-            meshRenderer.material = newSample.DyeMaterial;
-            newSample.DyeCount--;
-            newSample.SampleUI.UpdateCount(newSample.DyeCount);
-        }
-
-        private void Discolor(MeshRenderer meshRenderer, DyeSample oldSample)
-        {
-            if (oldSample != null)
-            {
-                oldSample.DyeCount++;
-                oldSample.SampleUI.UpdateCount(oldSample.DyeCount);
-            }
-
-            meshRenderer.material = MaterialManager.DiscolorMaterial;
         }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -6,25 +7,31 @@ namespace Gisha.DyeTheLevel.Dye
 {
     public class DyeSampleUI : MonoBehaviour, IPointerDownHandler
     {
-        [SerializeField] private TMP_Text countText;
+        public static event Action<int> DyeSampleUIInteracted;
 
-        public int DyeIndex { get; private set; }
+        private TMP_Text _countText;
+        private int _dyeIndex;
+
+        private void Awake()
+        {
+            _countText = GetComponentInChildren<TMP_Text>();
+        }
 
         public void InitializeSample(int index, int count)
         {
-            DyeIndex = index;
+            _dyeIndex = index;
             UpdateCount(count);
         }
 
         public void UpdateCount(int newCount)
         {
-            countText.text = newCount.ToString();
+            _countText.text = newCount.ToString();
         }
 
         public void OnPointerDown(PointerEventData eventData)
         {
             if (eventData.button == PointerEventData.InputButton.Left)
-                MaterialManager.ChangeDyeSample(DyeIndex);
+                DyeSampleUIInteracted?.Invoke(_dyeIndex);
         }
     }
 }
