@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using Gisha.DyeTheLevel.Core;
 
 
 namespace Gisha.DyeTheLevel.Dye
@@ -11,10 +12,7 @@ namespace Gisha.DyeTheLevel.Dye
         #region Singleton
         private static MaterialManager Instance { set; get; }
         #endregion
-
-        [Header("Materials")]
-        [SerializeField] private Material discolorMaterial;
-
+        
         [Header("Preview")]
         [SerializeField] private MeshRenderer previewMR;
 
@@ -23,16 +21,14 @@ namespace Gisha.DyeTheLevel.Dye
         [SerializeField] private Transform samplesRTParent;
         [SerializeField] private Transform samplesUIParent;
 
-        [Header("Prefabs")]
-        [SerializeField] private GameObject sampleRTPrefab;
-        [SerializeField] private GameObject sampleUIPrefab;
-
         public static DyeSample DyeSample { private set; get; }
         public static Material DiscolorMaterial { private set; get; }
         public static List<DyeSample> Samples { private set; get; }
 
         List<DyeSample> _samples = new List<DyeSample>();
 
+        private GameData _gameData => ResourceLoader.GetGameData();
+        
         private void Awake()
         {
             Instance = this;
@@ -46,7 +42,7 @@ namespace Gisha.DyeTheLevel.Dye
             UpdatePreview(DyeSample);
 
             Samples = _samples;
-            DiscolorMaterial = discolorMaterial;
+            DiscolorMaterial =  _gameData.DiscolorMaterial;
 
             DiscolorAll();
         }
@@ -66,8 +62,8 @@ namespace Gisha.DyeTheLevel.Dye
         {
             // Initializing, distincting materials for dyes.
             _samples = new List<DyeSample>();
-            MeshRenderer[] meshRenderers = dyeTargetsParent.GetComponentsInChildren<MeshRenderer>();
-            Material[] distinctMaterials = DistinctMaterials(meshRenderers);
+            var meshRenderers = dyeTargetsParent.GetComponentsInChildren<MeshRenderer>();
+            var distinctMaterials = DistinctMaterials(meshRenderers);
 
             // Creating dye samples.
             for (int i = 0; i < distinctMaterials.Length; i++)
@@ -94,7 +90,7 @@ namespace Gisha.DyeTheLevel.Dye
             rt = new RenderTexture(1024, 1024, 0);
 
             var position = Vector3.up * -10f * index;
-            var rtObject = Instantiate(sampleRTPrefab, position, Quaternion.identity, samplesRTParent);
+            var rtObject = Instantiate(_gameData.SampleRTPrefab, position, Quaternion.identity, samplesRTParent);
 
             rtObject.GetComponentInChildren<Camera>().targetTexture = rt;
             rtObject.GetComponentInChildren<MeshRenderer>().material = material;
@@ -104,7 +100,7 @@ namespace Gisha.DyeTheLevel.Dye
 
         private DyeSampleUI CreateUISample(RenderTexture rt, int dyeIndex, int dyeCount)
         {
-            var sampleUI = Instantiate(sampleUIPrefab, Vector3.zero, Quaternion.identity, samplesUIParent).GetComponent<DyeSampleUI>();
+            var sampleUI = Instantiate(_gameData.SampleUIPrefab, Vector3.zero, Quaternion.identity, samplesUIParent).GetComponent<DyeSampleUI>();
             sampleUI.InitializeSample(dyeIndex, dyeCount);
 
             var rawImage = sampleUI.GetComponent<RawImage>();
@@ -118,7 +114,7 @@ namespace Gisha.DyeTheLevel.Dye
             MeshRenderer[] meshRenderers = dyeTargetsParent.GetComponentsInChildren<MeshRenderer>();
 
             for (int i = 0; i < meshRenderers.Length; i++)
-                meshRenderers[i].material = discolorMaterial;
+                meshRenderers[i].material = _gameData.DiscolorMaterial;
         }
 
         private Material[] DistinctMaterials(MeshRenderer[] meshRenderers)
@@ -134,26 +130,6 @@ namespace Gisha.DyeTheLevel.Dye
         private void UpdatePreview(DyeSample sample)
         {
             previewMR.material = sample.DyeMaterial;
-        }
-    }
-
-    public class DyeSample
-    {
-        public int DyeCount { get; set; }
-
-        public DyeSampleUI SampleUI { get; private set; }
-        public Material DyeMaterial { get; private set; }
-
-        public GameObject RenderTextureObject { get; private set; }
-        public RenderTexture RenderTexture { get; private set; }
-
-        public DyeSample(DyeSampleUI sampleUI, Material dyeMaterial, int dyeCount, GameObject renderTextureObject, RenderTexture renderTexture)
-        {
-            SampleUI = sampleUI;
-            DyeMaterial = dyeMaterial;
-            DyeCount = dyeCount;
-            RenderTextureObject = renderTextureObject;
-            RenderTexture = renderTexture;
         }
     }
 }

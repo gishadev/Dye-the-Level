@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cae76af99992434ca89fea00ab90ef5, type: 3}
+  m_Name: GameData
+  m_EditorClassIdentifier: 
+  sampleRTPrefab: {fileID: 440548292122090642, guid: 498dad901bdd06c469f0cc4216ba43c3, type: 3}
+  sampleUIPrefab: {fileID: 8647641555946706265, guid: 738f7efad2f8e294e8577149d0f3d75d, type: 3}
+  discolorMaterial: {fileID: 2100000, guid: 592975565911a294797d847bba4af3a2, type: 2}
