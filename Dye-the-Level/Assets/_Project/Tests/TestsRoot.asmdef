@@ -1,0 +1,16 @@
+{
+    "name": "TestsRoot",
+    "rootNamespace": "",
+    "references": [
+        "GUID:233645ad81bc75d469beae01cbaca067"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -9,15 +9,15 @@ namespace Gisha.DyeTheLevel.Dye
             _dyeManager = dyeManager;
         }
 
-        public bool ContainsDyeSample(IColorable colorable, out IDyeSample ds)
+        public bool ContainsDyeSample(IColorable colorable, out IDyeSample sample)
         {
-            ds = null;
+            sample = null;
 
             foreach (var dye in _dyeManager.Samples)
             {
                 if (dye == colorable.CurrentDye)
                 {
-                    ds = dye;
+                    sample = dye;
                     return true;
                 }
             }
@@ -25,17 +25,17 @@ namespace Gisha.DyeTheLevel.Dye
             return false;
         }
 
-        public void Color(IColorable colorable, IDyeSample newSample, IDyeSample oldSample)
+        public void Color(IColorable colorable, IDyeSample newSample, IDyeSample previousSample)
         {
-            oldSample?.AddCount(1);
+            previousSample?.AddCount(1);
 
             colorable.ApplyDye(newSample);
             newSample.AddCount(-1);
         }
 
-        public void Discolor(IColorable colorable, IDyeSample oldSample)
+        public void Discolor(IColorable colorable, IDyeSample previousSample)
         {
-            oldSample?.AddCount(1);
+            previousSample?.AddCount(1);
             colorable.RemoveDye();
         }
     }

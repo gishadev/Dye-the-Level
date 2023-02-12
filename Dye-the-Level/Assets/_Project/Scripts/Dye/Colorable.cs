@@ -8,12 +8,10 @@ namespace Gisha.DyeTheLevel.Dye
         public IDyeSample CurrentDye { get; private set; }
 
         private MeshRenderer _mr;
-        private GameData _gameData;
 
         private void Awake()
         {
             _mr = GetComponent<MeshRenderer>();
-            _gameData = ResourceLoader.GetGameData();
         }
 
         public void ApplyDye(IDyeSample newSample)
@@ -25,7 +23,7 @@ namespace Gisha.DyeTheLevel.Dye
         public void RemoveDye()
         {
             CurrentDye = null;
-            TryChangeMaterial(_gameData.DiscolorMaterial);
+            TryChangeMaterial(ResourceLoader.GetGameData().DiscolorMaterial);
         }
 
         private void TryChangeMaterial(Material materialToChange)
