@@ -17,7 +17,7 @@ namespace Gisha.DyeTheLevel.Dye
         {
             _dyeManager = GetComponent<DyeManager>();
             _gameData = ResourceLoader.GetGameData();
-            _dyeChanger = new DyeChanger(_dyeManager, _gameData);
+            _dyeChanger = new DyeChanger(_dyeManager);
         }
 
         private void Update()
@@ -29,26 +29,26 @@ namespace Gisha.DyeTheLevel.Dye
 
         private void CheckLMB()
         {
-            if (RaycastAndReturnMR(out var mr))
+            if (RaycastAndReturnColorable(out var colorable))
             {
-                _dyeChanger.ContainsDyeSample(mr, out var oldSample);
-                _dyeChanger.Color(mr, _dyeManager.DyeSample, oldSample);
+                _dyeChanger.ContainsDyeSample(colorable, out var oldSample);
+                _dyeChanger.Color(colorable, _dyeManager.DyeSample, oldSample);
             }
         }
 
         private void CheckRMB()
         {
-            if (RaycastAndReturnMR(out var mr))
+            if (RaycastAndReturnColorable(out var colorable))
             {
-                _dyeChanger.ContainsDyeSample(mr, out var oldSample);
-                _dyeChanger.Discolor(mr, oldSample);
+                _dyeChanger.ContainsDyeSample(colorable, out var oldSample);
+                _dyeChanger.Discolor(colorable, oldSample);
             }
         }
 
 
-        private bool RaycastAndReturnMR(out MeshRenderer meshRenderer)
+        private bool RaycastAndReturnColorable(out Colorable colorable)
         {
-            meshRenderer = null;
+            colorable = null;
 
             if (_dyeManager.DyeSample == null)
                 return false;
@@ -57,7 +57,7 @@ namespace Gisha.DyeTheLevel.Dye
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
             if (Physics.Raycast(ray, out hitInfo, raycastDistance, whatIsPaintable))
-                return hitInfo.collider.TryGetComponent(out meshRenderer);
+                return hitInfo.collider.TryGetComponent(out colorable);
 
             return false;
         }

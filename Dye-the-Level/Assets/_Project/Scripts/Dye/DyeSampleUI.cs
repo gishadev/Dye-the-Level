@@ -7,23 +7,31 @@ namespace Gisha.DyeTheLevel.Dye
 {
     public class DyeSampleUI : MonoBehaviour, IPointerDownHandler
     {
-        public static event Action<int> DyeSampleUIInteracted;
+        public static event Action<IDyeSample> DyeSampleUIInteracted;
 
         private TMP_Text _countText;
-        private int _dyeIndex;
+        private IDyeSample _dyeSample;
 
         private void Awake()
         {
             _countText = GetComponentInChildren<TMP_Text>();
         }
 
-        public void InitializeSample(int index, int count)
+        public void InitializeSample(IDyeSample dyeSample, int count)
         {
-            _dyeIndex = index;
+            _dyeSample = dyeSample;
             UpdateCount(count);
+
+            _dyeSample.DyeCountChanged += UpdateCount;
         }
 
-        public void UpdateCount(int newCount)
+        private void OnDisable()
+        {
+            _dyeSample.DyeCountChanged -= UpdateCount;
+        }
+
+
+        private void UpdateCount(int newCount)
         {
             _countText.text = newCount.ToString();
         }
@@ -31,7 +39,7 @@ namespace Gisha.DyeTheLevel.Dye
         public void OnPointerDown(PointerEventData eventData)
         {
             if (eventData.button == PointerEventData.InputButton.Left)
-                DyeSampleUIInteracted?.Invoke(_dyeIndex);
+                DyeSampleUIInteracted?.Invoke(_dyeSample);
         }
     }
 }

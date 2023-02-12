@@ -1,28 +1,23 @@
-using Gisha.DyeTheLevel.Core;
-using UnityEngine;
-
 namespace Gisha.DyeTheLevel.Dye
 {
-    public class DyeChanger
+    public class DyeChanger : IDyeChanger
     {
-        private readonly DyeManager _dyeManager;
-        private readonly GameData _gameData;
+        private readonly IDyeManager _dyeManager;
 
-        public DyeChanger(DyeManager dyeManager, GameData gameData)
+        public DyeChanger(IDyeManager dyeManager)
         {
             _dyeManager = dyeManager;
-            _gameData = gameData;
         }
 
-        public bool ContainsDyeSample(MeshRenderer mr, out DyeSample ds)
+        public bool ContainsDyeSample(IColorable colorable, out IDyeSample ds)
         {
             ds = null;
 
-            foreach (var dyeSample in _dyeManager.Samples)
+            foreach (var dye in _dyeManager.Samples)
             {
-                if (dyeSample.DyeMaterial == mr.sharedMaterials[0])
+                if (dye == colorable.CurrentDye)
                 {
-                    ds = dyeSample;
+                    ds = dye;
                     return true;
                 }
             }
@@ -30,28 +25,18 @@ namespace Gisha.DyeTheLevel.Dye
             return false;
         }
 
-        public void Color(MeshRenderer meshRenderer, DyeSample newSample, DyeSample oldSample)
+        public void Color(IColorable colorable, IDyeSample newSample, IDyeSample oldSample)
         {
-            if (oldSample != null)
-            {
-                oldSample.DyeCount++;
-                oldSample.SampleUI.UpdateCount(oldSample.DyeCount);
-            }
+            oldSample?.AddCount(1);
 
-            meshRenderer.material = newSample.DyeMaterial;
-            newSample.DyeCount--;
-            newSample.SampleUI.UpdateCount(newSample.DyeCount);
+            colorable.ApplyDye(newSample);
+            newSample.AddCount(-1);
         }
 
-        public void Discolor(MeshRenderer meshRenderer, DyeSample oldSample)
+        public void Discolor(IColorable colorable, IDyeSample oldSample)
         {
-            if (oldSample != null)
-            {
-                oldSample.DyeCount++;
-                oldSample.SampleUI.UpdateCount(oldSample.DyeCount);
-            }
-
-            meshRenderer.material = _gameData.DiscolorMaterial;
+            oldSample?.AddCount(1);
+            colorable.RemoveDye();
         }
     }
 }

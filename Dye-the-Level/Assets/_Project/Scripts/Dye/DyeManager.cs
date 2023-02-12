@@ -7,7 +7,7 @@ using Gisha.DyeTheLevel.Core;
 
 namespace Gisha.DyeTheLevel.Dye
 {
-    public class DyeManager : MonoBehaviour
+    public class DyeManager : MonoBehaviour, IDyeManager
     {
         [Header("Preview")] [SerializeField] private MeshRenderer previewMR;
 
@@ -15,10 +15,10 @@ namespace Gisha.DyeTheLevel.Dye
         [SerializeField] private Transform samplesRTParent;
         [SerializeField] private Transform samplesUIParent;
 
-        public DyeSample DyeSample { private set; get; }
-        public List<DyeSample> Samples { private set; get; }
+        public IDyeSample DyeSample { private set; get; }
+        public List<IDyeSample> Samples { private set; get; }
 
-        private List<DyeSample> _samples = new List<DyeSample>();
+        private List<IDyeSample> _samples = new List<IDyeSample>();
         private GameData _gameData;
 
         private void Awake()
@@ -48,9 +48,9 @@ namespace Gisha.DyeTheLevel.Dye
             DyeSampleUI.DyeSampleUIInteracted -= ChangeDyeSample;
         }
 
-        private void ChangeDyeSample(int index)
+        private void ChangeDyeSample(IDyeSample sample)
         {
-            DyeSample = Samples[index];
+            DyeSample = sample;
             UpdatePreview(DyeSample);
 
             Debug.Log("Dye Sample was changed!");
@@ -62,7 +62,7 @@ namespace Gisha.DyeTheLevel.Dye
         private void CreateDyeSamplesFromWorldMeshRenderers()
         {
             // Initializing, distincting materials for dyes.
-            _samples = new List<DyeSample>();
+            _samples = new List<IDyeSample>();
             var meshRenderers = dyeTargetsParent.GetComponentsInChildren<MeshRenderer>();
             var distinctMaterials = DistinctMaterials(meshRenderers);
 
@@ -77,11 +77,10 @@ namespace Gisha.DyeTheLevel.Dye
                         dyeCount++;
                 }
 
-                GameObject renderTextureObject =
+                var sample = new DyeSample(dyeMaterial, dyeCount);
+                var renderTextureObject =
                     CreateRenderTextureObject(dyeMaterial, i, out RenderTexture renderTexture);
-                DyeSampleUI sampleUI = CreateUISample(renderTexture, i, dyeCount);
-
-                DyeSample sample = new DyeSample(sampleUI, dyeMaterial, dyeCount, renderTextureObject, renderTexture);
+                var sampleUI = CreateUISample(renderTexture, sample, dyeCount);
 
                 _samples.Add(sample);
             }
@@ -100,13 +99,13 @@ namespace Gisha.DyeTheLevel.Dye
             return rtObject;
         }
 
-        private DyeSampleUI CreateUISample(RenderTexture rt, int dyeIndex, int dyeCount)
+        private DyeSampleUI CreateUISample(RenderTexture rt, IDyeSample dyeSample, int dyeCount)
         {
             GameObject sampleUIObject =
                 Instantiate(_gameData.SampleUIPrefab, Vector3.zero, Quaternion.identity, samplesUIParent);
 
             var sampleUI = sampleUIObject.GetComponent<DyeSampleUI>();
-            sampleUI.InitializeSample(dyeIndex, dyeCount);
+            sampleUI.InitializeSample(dyeSample, dyeCount);
 
             var rawImage = sampleUIObject.GetComponent<RawImage>();
             rawImage.texture = rt;
@@ -132,7 +131,7 @@ namespace Gisha.DyeTheLevel.Dye
             return result;
         }
 
-        private void UpdatePreview(DyeSample sample)
+        private void UpdatePreview(IDyeSample sample)
         {
             previewMR.material = sample.DyeMaterial;
         }
